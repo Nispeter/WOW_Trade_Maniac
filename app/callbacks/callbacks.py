@@ -14,7 +14,30 @@ def register_callbacks(app):
         
         item_data = get_item_prices(search_value)
         if not item_data:
-            return "No Item Found", "", {}
+            return "No Item Found", "", { 'data': [],
+                'layout': {
+                'plot_bgcolor': '#393433', 
+                'paper_bgcolor': '#393433',  
+                'font': {
+                    'color': '#CD970D'  
+                },
+                'title': 'Price History',
+                'xaxis': {
+                    'gridcolor': 'rgba(205, 151, 13, 0.2)',  
+                    'linecolor': '#CD970D',                  
+                    'title': 'Time',
+                    'ticks': 'outside',                      
+                    'tickcolor': '#CD970D'                 
+                },
+                'yaxis': {
+                    'gridcolor': 'rgba(205, 151, 13, 0.2)',
+                    'linecolor': '#CD970D',                  
+                    'title': 'Price',
+                    'ticks': 'outside',                     
+                    'tickcolor': '#CD970D'   
+                }
+            }
+            }
         
         item_name = search_value
         current_price = item_data[-1]['unit_price'] if item_data else 0
@@ -25,5 +48,26 @@ def register_callbacks(app):
 
         return item_name, f"${current_price}", {
             'data': [{'x': x_values, 'y': y_values, 'type': 'line'}],
-            'layout': {'title': 'Price History'}
+            'layout': {
+                'plot_bgcolor': '#393433',  
+                'paper_bgcolor': '#393433',  
+                'font': {
+                    'color': '#CD970D'  
+                },
+                'title': 'Price History',
+                'xaxis': {
+                    'gridcolor': 'rgba(205, 151, 13, 0.2)',  
+                    'linecolor': '#CD970D',                  
+                    'title': 'Time',
+                    'ticks': 'outside',                     
+                    'tickcolor': '#CD970D'  
+                },       
+                'yaxis': {
+                    'gridcolor': 'rgba(205, 151, 13, 0.2)',
+                    'linecolor': '#CD970D',                  
+                    'title': 'Price',
+                    'ticks': 'outside',                     
+                    'tickcolor': '#CD970D'                   
+                }
+            }
         }

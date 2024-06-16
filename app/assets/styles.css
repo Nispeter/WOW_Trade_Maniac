@@ -80,9 +80,9 @@ body {
     width: 100%; 
     padding: 8px 12px; 
     background-color: transparent;
-    border: 2px solid #007BFF; 
+    border: 2px solid var(--gold);
     border-radius: 20px; 
-    color: #FFFFFF; 
+    color: #393433; 
     outline: none;
 }
 
