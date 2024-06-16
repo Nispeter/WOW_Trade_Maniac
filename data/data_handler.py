@@ -40,7 +40,6 @@ def get_item_prices(item_name):
     item_data = merged_df[merged_df['item_name'].str.contains(item_name, case=False)]
     if item_data.empty:
         return None
-    print("Item data columns:", item_data.columns)
     return item_data[['snapshot_order', 'unit_price', 'quantity']].to_dict(orient='records')
 
 # Function to get item statistics for graphs

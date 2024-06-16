@@ -27,6 +27,10 @@ def create_layout(items):
                         html.H4('Current Prices', style={'color': 'white'}),
                         html.P(id='current-prices', style={'color': 'white'}),
                         dcc.Graph(id='price-history-graph'),
+                        dcc.Graph(id='lowest-price-graph'),
+                        dcc.Graph(id='price-distribution-graph'),
+                        dcc.Graph(id='quantity-sold-graph'),
+                        dcc.Graph(id='price-quantity-scatter'),
                     ])
                 ], className="item_card")
             ], width=8, className="col2", style={"margin-left": "100px;"})
