@@ -1,7 +1,26 @@
 import pandas as pd
+import glob
+import os
 
-# Load data from Excel files
-commodities_snapshot = pd.read_excel('../api/data/commodities_snapshot-2024-06-03.xlsx')
+# Define the path to the folder containing the Excel files
+data_folder = '../api/data'
+
+# Get a list of all Excel files in the data folder
+excel_files = glob.glob(os.path.join(data_folder, '*.xlsx'))
+
+# Initialize an empty list to hold the DataFrames
+df_list = []
+
+# Iterate over the files and read each into a DataFrame
+for idx, file in enumerate(sorted(excel_files)):
+    df = pd.read_excel(file)
+    df['snapshot_order'] = idx + 1  # Add a column for the snapshot order
+    df_list.append(df)
+
+# Concatenate all DataFrames into one
+commodities_snapshot = pd.concat(df_list, ignore_index=True)
+
+# Load item cache
 item_cache = pd.read_excel('../api/item_cache.xlsx')
 
 # Merge the dataframes on item_id
@@ -21,4 +40,12 @@ def get_item_prices(item_name):
     item_data = merged_df[merged_df['item_name'].str.contains(item_name, case=False)]
     if item_data.empty:
         return None
-    return item_data[['unit_price', 'quantity']].to_dict(orient='records')
+    print("Item data columns:", item_data.columns)
+    return item_data[['snapshot_order', 'unit_price', 'quantity']].to_dict(orient='records')
+
+# Function to get item statistics for graphs
+def get_item_statistics(item_name):
+    item_data = merged_df[merged_df['item_name'].str.contains(item_name, case=False)]
+    if item_data.empty:
+        return None
+    return item_data
