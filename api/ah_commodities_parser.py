@@ -1,6 +1,8 @@
 import requests
 import json
 import pandas as pd
+import schedule
+import time
 from datetime import datetime
 
 # Configuración
@@ -34,33 +36,39 @@ def guardar_datos_en_excel(datos, file_path):
     df['date'] = fecha_actual
     df.to_excel(file_path, index=False)
 
-# main
-if __name__ == '__main__':
+# Para dejar mientras duermo xd
+def take_snapshot():
+    print("Starting snapshot...")
     token = obtener_token(client_id, client_secret)
-    ## Obtener datos de commodities y procesarlos
+    print("Token obtained.")
     datos_commodities = obtener_datos_commodities(token)
-    print(datos_commodities)
+    print("Commodities data obtained.")
 
     all_items = []
 
-    # Iterar sobre los commodities
     for commodity in datos_commodities['auctions']:
         item_id = commodity['item']['id']
-        unit_price = commodity['unit_price'] / 10000  # Se divide en 10000 dado a que retorna el precio en cobre
+        unit_price = commodity['unit_price'] / 10000
         quantity = commodity['quantity']
 
-        # Agregar el objeto a la lista
         all_items.append({
             'item_id': item_id,
             'unit_price': unit_price,
             'quantity': quantity,
         })
 
-    # Convertir la lista de objetos a un DataFrame de pandas
+    print("Data processed.")
     df = pd.DataFrame(all_items)
-
-    # Guardar los datos en un archivo Excel
-    current_date = datetime.now().strftime('%Y-%m-%d')
-    df.to_excel(f'commodities_snapshot-{current_date}.xlsx', index=False)
+    current_date = datetime.now().strftime('%Y-%m-%d-%H')
+    df.to_excel(f'data/commodities_snapshot-{current_date}.xlsx', index=False)
 
     print(f"Datos almacenados correctamente en 'commodities_snapshot-{current_date}.xlsx'")
+    print("Snapshot completed.")
+
+if __name__ == '__main__':
+    take_snapshot()  # Run the function immediately
+    schedule.every(1).hours.do(take_snapshot)  # Then schedule it to run every hour
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

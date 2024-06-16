@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load data from Excel files
-commodities_snapshot = pd.read_excel('../api/commodities_snapshot-2024-06-03.xlsx')
+commodities_snapshot = pd.read_excel('../api/data/commodities_snapshot-2024-06-03.xlsx')
 item_cache = pd.read_excel('../api/item_cache.xlsx')
 
 # Merge the dataframes on item_id
