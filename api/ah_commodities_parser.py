@@ -59,8 +59,8 @@ def take_snapshot():
 
     print("Data processed.")
     df = pd.DataFrame(all_items)
-    current_date = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    df.to_excel(f'commodities_snapshot-{current_date}.xlsx', index=False)
+    current_date = datetime.now().strftime('%Y-%m-%d-%H')
+    df.to_excel(f'data/commodities_snapshot-{current_date}.xlsx', index=False)
 
     print(f"Datos almacenados correctamente en 'commodities_snapshot-{current_date}.xlsx'")
     print("Snapshot completed.")
