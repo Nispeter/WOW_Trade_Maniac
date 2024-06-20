@@ -3,8 +3,8 @@ import pandas as pd
 from datetime import datetime
 
 # Configuración
-client_id = '9eb1cdbc77b344d0b2cf9cae2e67e2e2'
-client_secret = 'gNK7131xK3IsLyYC43HuAKL3YulaZGHb'
+client_id = ''
+client_secret = ''
 region = 'us'  # us, eu, kr, tw, cn
 
 # Obtener token de acceso
