@@ -49,10 +49,10 @@ def get_item_statistics(item_name):
         return None
     return item_data
 def get_category_dict():
-    # Extract unique categories
-    unique_categories = merged_df['category'].unique()
+    # Extract unique categories and ensure they are strings, excluding integers
+    unique_categories = [category for category in merged_df['category'].unique() if isinstance(category, str)]
     
-    # Organize the categories and sub-categories
+    # Organize the categories and sub-categories, implicitly skipping non-string categories
     categories_dict = {}
     for category in sorted(unique_categories):
         categories_dict[category] = sorted(merged_df[merged_df['category'] == category]['subcategory'].unique().tolist())
