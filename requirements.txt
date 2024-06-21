@@ -11,3 +11,4 @@ pywaffle
 wordcloud
 nltk
 dash-bootstrap-components
+dash_cytoscape

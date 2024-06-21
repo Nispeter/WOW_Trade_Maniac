@@ -48,3 +48,65 @@ def get_item_statistics(item_name):
     if item_data.empty:
         return None
     return item_data
+
+# Function to get crafting dependencies
+def get_crafting_dependencies():
+    crafting_data = pd.read_excel('../api/wow_recipes.xlsx')
+
+    # Create node labels
+    nodes = list(crafting_data['recipe_name'].unique()) + list(crafting_data['reagent_name'].unique())
+    
+    # Create link data
+    link_data = crafting_data.groupby(['recipe_name', 'reagent_name']).sum().reset_index()
+    links = {
+        'source': [nodes.index(row['reagent_name']) for _, row in link_data.iterrows()],
+        'target': [nodes.index(row['recipe_name']) for _, row in link_data.iterrows()],
+        'value': list(link_data['reagent_quantity'])
+    }
+
+    return {'nodes': nodes, 'links': links}
+
+df = pd.read_excel('../api/data/wow_recipes.xlsx')
+def get_es_mx_name(name):
+    try:
+        name_dict = eval(name)
+        return name_dict.get('es_MX', 'Nombre no disponible')
+    except:
+        return 'Nombre no disponible'
+
+# Apply the function to the columns
+df['item_name_es'] = df['recipe_name'].apply(get_es_mx_name)
+df['reagent_name_es'] = df['reagent_name'].apply(get_es_mx_name)
+
+# Helper function to create nodes and edges for cytoscape
+def create_elements(item_id):
+    elements = []
+    visited = set()
+    
+    def add_elements(item_id):
+        if item_id in visited:
+            return
+        visited.add(item_id)
+        
+        item_rows = df[df['item_id'] == item_id]
+        if item_rows.empty:
+            print(f"No item found for ID: {item_id}")
+            return
+        
+        item_row = item_rows.iloc[0]
+        item_name = item_row['item_name_es']
+        print(f"Adding item: {item_name} (ID: {item_id})")
+        elements.append({'data': {'id': str(item_id), 'label': item_name}})
+        
+        reagents = df[df['recipe_id'] == item_row['recipe_id']]
+        for _, reagent in reagents.iterrows():
+            reagent_id = reagent['reagent_id']
+            reagent_name = reagent['reagent_name_es']
+            reagent_quantity = reagent['reagent_quantity']
+            print(f"Adding reagent: {reagent_name} (ID: {reagent_id}, Quantity: {reagent_quantity})")
+            elements.append({'data': {'id': str(reagent_id), 'label': f"{reagent_name} ({reagent_quantity})"}})
+            elements.append({'data': {'source': str(item_id), 'target': str(reagent_id)}})
+            add_elements(reagent_id)
+    
+    add_elements(item_id)
+    return elements

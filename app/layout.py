@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
 from components import create_search_bar, create_category_dropdown, create_sidebar_list_button
+import dash_cytoscape as cyto
 
 dropdown_categories = ['Weapons', 'Armor', 'Consumables', 'Materials', 'Miscellaneous']
 dropdown_items = ['Swords', 'Axes', 'Maces', 'Daggers', 'Staves', 'Bows', 'Crossbows', 'Guns', 'Wands']
@@ -23,10 +24,16 @@ def create_layout(items):
                 ], class_name="top-bar"),
                 dbc.Card([
                     html.H2(id='item-title', style={'color': 'white'}),
+                    
                     dbc.CardBody([
+                        cyto.Cytoscape(
+                            id='cytoscape',
+                            layout={'name': 'breadthfirst'},
+                            style={'width': '100%', 'height': '600px'},
+                            elements=[],
+                        ),
                         html.H4('Current Prices', style={'color': 'white'}),
                         html.P(id='current-prices', style={'color': 'white'}),
-                        dcc.Graph(id='price-history-graph'),
                         dcc.Graph(id='lowest-price-graph'),
                         dcc.Graph(id='price-distribution-graph'),
                         dcc.Graph(id='quantity-sold-graph'),
