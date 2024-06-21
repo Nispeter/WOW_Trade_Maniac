@@ -48,3 +48,25 @@ def get_item_statistics(item_name):
     if item_data.empty:
         return None
     return item_data
+def get_category_dict():
+    # Extract unique categories
+    unique_categories = merged_df['category'].unique()
+    
+    # Organize the categories and sub-categories
+    categories_dict = {}
+    for category in sorted(unique_categories):
+        categories_dict[category] = sorted(merged_df[merged_df['category'] == category]['subcategory'].unique().tolist())
+    
+    return categories_dict
+def filter_items_by_category(category, sub_category=None):
+    # Filter by category only if sub_category is not provided
+    if sub_category is None:
+        filtered_df = merged_df.loc[merged_df['category'] == category]
+    else:
+        # Filter by both category and sub_category
+        filtered_df = merged_df.loc[(merged_df['category'] == category) & (merged_df['subcategory'] == sub_category)]
+    
+    if filtered_df.empty:
+        return None
+    else:
+        return filtered_df

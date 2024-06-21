@@ -1,9 +1,11 @@
 import dash_bootstrap_components as dbc
 from dash import html, dcc
 from components import create_search_bar, create_category_dropdown, create_sidebar_list_button
+from data import get_category_dict
 
-dropdown_categories = ['Weapons', 'Armor', 'Consumables', 'Materials', 'Miscellaneous']
-dropdown_items = ['Swords', 'Axes', 'Maces', 'Daggers', 'Staves', 'Bows', 'Crossbows', 'Guns', 'Wands']
+
+
+categories_dict = get_category_dict()
 
 def create_layout(items):
     return dbc.Container([
@@ -11,7 +13,8 @@ def create_layout(items):
             dbc.Col([ 
                 create_sidebar_list_button("precios", "ACTUALES", "/assets/icons/price-tag.png"), 
                 create_sidebar_list_button("precios", "HISTORICOS", "/assets/icons/price-tag.png"), 
-                *[create_category_dropdown(category, dropdown_items) for category in dropdown_categories],
+                
+                *[create_category_dropdown(category, categories_dict[category]) for category in categories_dict],
             ], width=3, className="col1"),
             dbc.Col([
                 dbc.Row([
