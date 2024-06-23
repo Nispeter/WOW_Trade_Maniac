@@ -127,10 +127,17 @@ def create_elements(item_id):
             reagent_id = reagent['reagent_id']
             reagent_name = reagent['reagent_name_es']
             reagent_quantity = reagent['reagent_quantity']
-            print(f"Adding reagent: {reagent_name} (ID: {reagent_id}, Quantity: {reagent_quantity})")
-            elements.append({'data': {'id': str(reagent_id), 'label': f"{reagent_name} ({reagent_quantity})"}})
+            reagent_price = get_item_prices(reagent_name)
+            unit_price = reagent_price[0]['unit_price']
+            print(f"Adding reagent: {reagent_name} (ID: {reagent_id}, Quantity: {reagent_quantity}, Price: {unit_price})")
+            elements.append({'data': {'id': str(reagent_id), 'label': f"{reagent_name} ({reagent_quantity}, Price: {unit_price})"}})
             elements.append({'data': {'source': str(item_id), 'target': str(reagent_id)}})
             add_elements(reagent_id)
     
     add_elements(item_id)
     return elements
+
+def create_initial_search_options():
+    items_df = get_item_summary()
+    items = items_df['item_name_'].tolist()
+    return [{'label': item, 'value': item} for item in items]

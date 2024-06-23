@@ -1,8 +1,9 @@
 import dash 
-from dash import Input, Output, State, ALL, callback_context
+from dash import Input, Output, State, ALL, callback_context, html
 import plotly.graph_objs as go
-from data import get_item_prices, get_item_statistics, df, create_elements, get_category_dict, merged_df
+from data import get_item_prices, get_item_statistics, df, create_elements, get_category_dict, merged_df, create_initial_search_options
 from components import create_selected_filter_card
+import dash_bootstrap_components as dbc
 def register_callbacks(app):
     @app.callback(
         Output('cytoscape', 'elements'),
@@ -16,8 +17,8 @@ def register_callbacks(app):
                 elements = create_elements(item_id)
                 return elements
         return []
-
-    @app.callback(
+    
+    @app.callback(  
         Output('result', 'children'),
         Input('cytoscape', 'tapNodeData')
     )
@@ -33,8 +34,13 @@ def register_callbacks(app):
                     result_str += f"Requiere:<br>"
                     reagent_df = df[df['recipe_id'] == item_row['recipe_id']]
                     for _, reagent_row in reagent_df.iterrows():
-                        result_str += f"{reagent_row['reagent_name_es']} - Cantidad: {reagent_row['reagent_quantity']}<br>"
-                    return result_str
+                        price_data = get_item_prices(reagent_row['reagent_name_es'])
+                        if price_data is not None and len(price_data) > 0:
+                            unit_price = price_data[1]['unit_price']
+                            result_str += f"{reagent_row['reagent_name_es']} - Cantidad: {reagent_row['reagent_quantity']}, Precio: {unit_price}<br>"
+                        else:
+                            result_str += f"{reagent_row['reagent_name_es']} - Cantidad: {reagent_row['reagent_quantity']}, Precio: No disponible<br>"
+                        return result_str
             except Exception as e:
                 print(f"Error processing node data: {e}")
         return "Seleccione un nodo para ver los requisitos de fabricación."
@@ -51,6 +57,15 @@ def register_callbacks(app):
     def update_item_details(search_value):
         if search_value is None:
             search_value = 'Rune Cloth'
+            empty_graph_layout = go.Layout(
+            plot_bgcolor='#393433',
+            paper_bgcolor='#393433',
+            font={'color': '#CD970D'},
+            xaxis={'showgrid': False, 'zeroline': False},
+            yaxis={'showgrid': False, 'zeroline': False}
+            )
+            empty_graph = go.Figure(layout=empty_graph_layout)
+            return "No item selected", "",empty_graph,empty_graph,empty_graph,empty_graph
         
         item_data = get_item_prices(search_value)
         item_stats = get_item_statistics(search_value)
@@ -80,8 +95,15 @@ def register_callbacks(app):
                     }
                 }
             }
-            return "No Item Found", "", empty_layout, empty_layout, empty_layout, empty_layout
-        
+            empty_graph_layout = go.Layout(
+            plot_bgcolor='#393433',
+            paper_bgcolor='#393433',
+            font={'color': '#CD970D'},
+            xaxis={'showgrid': False, 'zeroline': False},
+            yaxis={'showgrid': False, 'zeroline': False}
+            )
+            empty_graph = go.Figure(layout=empty_graph_layout)
+            return "No item selected", "",empty_graph,empty_graph,empty_graph,empty_graph
         item_name = search_value
         current_price = item_data[-1]['unit_price'] if item_data else 0
 
@@ -162,18 +184,27 @@ def register_callbacks(app):
     @app.callback(
         Output('selected-category-name', 'children'),  
         Output('search-bar', 'options'),
-        [Input({'type': 'category-dropdown-item', 'index': ALL}, 'n_clicks')],
+        Output('clear-filter-button', 'style'),
+        [Input({'type': 'category-dropdown-item', 'index': ALL}, 'n_clicks'),
+        Input('clear-filter-button', 'n_clicks')],
         prevent_initial_call=True
     )
-    def update_output(n_clicks):
+    def update_output(category_clicks, clear_clicks):
         ctx = callback_context
         if not ctx.triggered:
-            return create_selected_filter_card()
-        else:
-            item_id = ctx.triggered[0]['prop_id'].split('.')[0]
-            item_id = eval(item_id)['index']  # Convert string representation of dict back to dict and get the index
-            
-            filtered_df = merged_df[merged_df['subcategory'] == item_id]
-            filtered_items = filtered_df['item_name'].unique().tolist()
-            search_options = [{'label': item, 'value': item} for item in filtered_items]
-            return create_selected_filter_card(item_id= item_id), search_options
+            return create_selected_filter_card(), dash.no_update, {'display': 'none'}
+        
+        triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        if triggered_id == 'clear-filter-button':
+            return html.Div(style={'display': 'none'}), create_initial_search_options(),  {'display': 'none'}
+        
+        item_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        item_id = eval(item_id)['index']  # Convert string representation of dict back to dict
+        
+        filtered_df = merged_df[merged_df['subcategory'] == item_id]
+        filtered_items = filtered_df['item_name'].unique().tolist()
+        search_options = [{'label': item, 'value': item} for item in filtered_items]
+        
+        return create_selected_filter_card(item_id=item_id), search_options, {'display': 'block'}
+
+
