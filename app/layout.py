@@ -24,6 +24,7 @@ def create_layout(items):
                         html.H2("Plataforma para tradear y craftear.", className="tm-h2-subtitle"),
                     ]), width=4),
                     create_search_bar(items),
+                    html.Div(id='selected-category-name', className='selected-category')
                 ], class_name="top-bar"),
                 dbc.Card([
                     html.H2(id='item-title', style={'color': 'white'}),

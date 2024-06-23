@@ -1,7 +1,8 @@
-from dash import Input, Output
+import dash 
+from dash import Input, Output, State, ALL, callback_context
 import plotly.graph_objs as go
-from data import get_item_prices, get_item_statistics, df, create_elements
-
+from data import get_item_prices, get_item_statistics, df, create_elements, get_category_dict, merged_df
+from components import create_selected_filter_card
 def register_callbacks(app):
     @app.callback(
         Output('cytoscape', 'elements'),
@@ -157,3 +158,22 @@ def register_callbacks(app):
             }
         }
         return item_name, f"${current_price}", lowest_price_figure, price_distribution_figure, quantity_sold_figure, price_quantity_scatter
+
+    @app.callback(
+        Output('selected-category-name', 'children'),  
+        Output('search-bar', 'options'),
+        [Input({'type': 'category-dropdown-item', 'index': ALL}, 'n_clicks')],
+        prevent_initial_call=True
+    )
+    def update_output(n_clicks):
+        ctx = callback_context
+        if not ctx.triggered:
+            return create_selected_filter_card()
+        else:
+            item_id = ctx.triggered[0]['prop_id'].split('.')[0]
+            item_id = eval(item_id)['index']  # Convert string representation of dict back to dict and get the index
+            
+            filtered_df = merged_df[merged_df['subcategory'] == item_id]
+            filtered_items = filtered_df['item_name'].unique().tolist()
+            search_options = [{'label': item, 'value': item} for item in filtered_items]
+            return create_selected_filter_card(item_id= item_id), search_options

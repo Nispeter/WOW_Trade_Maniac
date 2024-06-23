@@ -209,3 +209,24 @@ img {
     background-color: #0056b3;
     color: var(--background-1); 
 }
+
+/* SELECTED FILTER CARD */
+.selected-filter-card-header {
+    background-color: #4B3621;
+    color: gold;
+}
+
+.selected-filter-card-body {
+    background-color: #2C1B0A;
+}
+
+.selected-filter-card-text {
+    color: #DAA520;
+}
+
+.selected-filter-card {
+    width: 18rem;
+    padding: 10px;
+    border: 1px solid gold;
+    border-radius: 5px;
+}

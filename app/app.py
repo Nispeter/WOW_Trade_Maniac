@@ -14,6 +14,8 @@ from data import get_item_summary
 items_df = get_item_summary()
 items = items_df['item_name_'].tolist()
 
+
+
 # Create a Dash application
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, 'https://use.fontawesome.com/releases/v5.8.1/css/all.css'])
 
