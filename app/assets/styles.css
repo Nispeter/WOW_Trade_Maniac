@@ -230,3 +230,19 @@ img {
     border: 1px solid gold;
     border-radius: 5px;
 }
+
+/* CLEAR FILTER BUTTON */
+
+.clear-filter-button {
+    background-color: var(--background-1); /* Use the background-1 color for the button background */
+    color: var(--gold); /* Use the gold color for the text */
+    border: none; /* No border for a modern look */
+    padding: 10px 20px; /* Adequate padding for button size */
+    font-size: 16px; /* Readable text size */
+    cursor: pointer; /* Change cursor to pointer on hover for better UX */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.clear-filter-button:hover {
+    background-color: var(--background-2); /* Slightly darker background on hover for feedback */
+}

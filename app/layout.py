@@ -26,8 +26,10 @@ def create_layout(items):
                     create_search_bar(items),
                     dbc.Col(
                         [
-                            html.Div(id='selected-category-name', className='selected-category'), 
-                            dbc.Button("X", id='clear-filter-button', n_clicks=0, className='clear-filter-button', style={'display': 'none'})
+                            html.Div([
+                                html.Div(id='selected-category-name', className='selected-category'), 
+                                dbc.Button("Reset Filter", id='clear-filter-button', n_clicks=0, className='clear-filter-button', style={'display': 'none'})
+                            ], style={'display': 'flex', 'alignItems': 'center'}),  # This div wraps the filter and the button, applying flexbox
                         ],
                         width=4  # Adjust width as needed
                     )
