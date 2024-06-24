@@ -8,6 +8,57 @@ import dash_cytoscape as cyto
 
 categories_dict = get_category_dict()
 
+stylesheet = [
+    {
+        'selector': 'node',
+        'style': {
+            'background-color': 'var(--gold)',
+            'label': 'data(label)',
+            'color': 'white',  # Text color
+            'font-size': '12px',
+            'font-weight': 'bold',
+            'text-halign': 'center',
+            'text-valign': 'top',  # Position text above the node
+            'border-width': '2px',
+            'border-color': 'var(--blue)',
+            'text-outline-color': 'black',  # Text outline color
+            'text-outline-width': '2px',  # Text outline width
+        }
+    },
+    {
+        'selector': 'edge',
+        'style': {
+            'line-color': 'var(--white)',
+            'width': 2,
+            'target-arrow-color': 'var(--white)',
+            'target-arrow-shape': 'triangle',
+            'arrow-scale': 1.5,
+        }
+    },
+    {
+        'selector': 'node:selected',
+        'style': {
+            'background-color': 'var(--blue)',
+            'border-color': 'var(--gold)',
+            'border-width': '4px',
+        }
+    },
+    {
+        'selector': 'edge:selected',
+        'style': {
+            'line-color': 'var(--gold)',
+            'target-arrow-color': 'var(--gold)',
+        }
+    },
+    {
+        'selector': ':hover',
+        'style': {
+            'background-color': 'var(--blue)',
+            'color': 'var(--gold)',
+        }
+    }
+]
+
 def create_layout(items):
     return dbc.Container([
         dbc.Row([
@@ -38,11 +89,25 @@ def create_layout(items):
                     html.H2(id='item-title', style={'color': 'white'}),
                     
                     dbc.CardBody([
-                        cyto.Cytoscape(
-                            id='cytoscape',
-                            layout={'name': 'breadthfirst'},
-                            style={'width': '100%', 'height': '600px'},
-                            elements=[],
+                        dbc.Card(
+                            [
+                                cyto.Cytoscape(
+                                    id='cytoscape',
+                                    layout={'name': 'breadthfirst'},
+                                    style={'width': '100%', 'height': '600px', 'background-color': 'var(--background-1)'},
+                                    elements=[],
+                                    stylesheet=stylesheet,
+                                    minZoom=0.5,  # Minimum zoom level
+                                    maxZoom=2,  # Maximum zoom level
+                                ),
+                            ],
+                            body=True,
+                            style={
+                                'background-color': 'var(--background-2)', 
+                                'border-radius': '15px', 
+                                'padding': '10px', 
+                                'box-shadow': '0 4px 8px var(--blue-shadow)'
+                            }
                         ),
                         html.H4('Current Prices', style={'color': 'white'}),
                         html.P(id='current-prices', style={'color': 'white'}),
