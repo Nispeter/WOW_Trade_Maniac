@@ -4,9 +4,11 @@ import plotly.graph_objs as go
 from data import get_item_prices, get_item_statistics, df, create_elements, get_category_dict, merged_df, create_initial_search_options
 from components import create_selected_filter_card
 import dash_bootstrap_components as dbc
+
 def register_callbacks(app):
     @app.callback(
         Output('cytoscape', 'elements'),
+        Output('cytoscape', 'stylesheet'),
         Input('search-bar', 'value')
     )
     def update_graph(search_value):
@@ -15,8 +17,28 @@ def register_callbacks(app):
             if not filtered_df.empty:
                 item_id = filtered_df.iloc[0]['item_id']
                 elements = create_elements(item_id)
-                return elements
-        return []
+                
+                # Define stylesheet
+                stylesheet = [
+                    {
+                        'selector': 'node',
+                        'style': {
+                            'label': 'data(label)',
+                            'background-color': 'data(color)',  # Use the color data property
+                            'color': '#FFFFFF'  # Label color
+                        }
+                    },
+                    {
+                        'selector': 'edge',
+                        'style': {
+                            'line-color': '#A3C4DC',
+                            'width': 2
+                        }
+                    }
+                ]
+                return elements, stylesheet
+
+        return [], []
     
     @app.callback(  
         Output('result', 'children'),

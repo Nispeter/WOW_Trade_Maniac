@@ -106,22 +106,27 @@ df['reagent_name_es'] = df['reagent_name'].apply(get_es_mx_name)
 def create_elements(item_id):
     elements = []
     visited = set()
-    
-    def add_elements(item_id):
+
+    def add_elements(item_id, is_parent=False):
         if item_id in visited:
             return
         visited.add(item_id)
-        
+
         item_rows = df[df['item_id'] == item_id]
         if item_rows.empty:
             print(f"No item found for ID: {item_id}")
             return
-        
+
         item_row = item_rows.iloc[0]
         item_name = item_row['item_name_es']
         print(f"Adding item: {item_name} (ID: {item_id})")
-        elements.append({'data': {'id': str(item_id), 'label': item_name}})
-        
+
+        # Assign a different color if it's the parent node
+        if is_parent:
+            elements.append({'data': {'id': str(item_id), 'label': item_name, 'color': '#FF0000'}})  # Red color for the parent node
+        else:
+            elements.append({'data': {'id': str(item_id), 'label': item_name}})
+
         reagents = df[df['recipe_id'] == item_row['recipe_id']]
         for _, reagent in reagents.iterrows():
             reagent_id = reagent['reagent_id']
@@ -133,8 +138,8 @@ def create_elements(item_id):
             elements.append({'data': {'id': str(reagent_id), 'label': f"{reagent_name} ({reagent_quantity}, Price: {unit_price})"}})
             elements.append({'data': {'source': str(item_id), 'target': str(reagent_id)}})
             add_elements(reagent_id)
-    
-    add_elements(item_id)
+
+    add_elements(item_id, is_parent=True)  # The initial call sets the root node as the parent
     return elements
 
 def create_initial_search_options():

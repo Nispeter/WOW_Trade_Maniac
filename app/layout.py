@@ -4,8 +4,6 @@ from components import create_search_bar, create_category_dropdown, create_sideb
 from data import get_category_dict
 import dash_cytoscape as cyto
 
-
-
 categories_dict = get_category_dict()
 
 stylesheet = [
@@ -36,6 +34,15 @@ stylesheet = [
         }
     },
     {
+        'selector': 'edge[parent]',
+        'style': {
+            'target-arrow-shape': 'triangle',
+            'target-arrow-color': 'var(--gold)',  # Arrow color from child to parent
+            'line-color': 'var(--gold)',  # Line color from child to parent
+            'curve-style': 'bezier',  # Adjust the curve style as needed
+        }
+    },
+    {
         'selector': 'node:selected',
         'style': {
             'background-color': 'var(--blue)',
@@ -58,6 +65,7 @@ stylesheet = [
         }
     }
 ]
+
 
 def create_layout(items):
     return dbc.Container([
@@ -99,6 +107,11 @@ def create_layout(items):
                                     stylesheet=stylesheet,
                                     minZoom=0.5,  # Minimum zoom level
                                     maxZoom=2,  # Maximum zoom level
+                                    panningEnabled=True,
+                                    userPanningEnabled=True,
+                                    userZoomingEnabled=True,
+                                    zoom=1,  # Initial zoom level
+                                    pan={'x': 0, 'y': 0},  # Initial pan position
                                 ),
                             ],
                             body=True,
