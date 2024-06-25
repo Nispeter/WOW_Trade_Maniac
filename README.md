@@ -53,3 +53,8 @@ python app.py
 - Búsqueda por categoría: Barra lateral izquierda con todas las categorías del juego. Al seleccionar una categoría, se limita la lista de objetos en el buscador a esa categoría.
 - Botón de limpiar búsqueda: Limpia el objeto buscado y las categorías seleccionadas.
 - Barra por nombre: Permite buscar objetos específicos por su nombre, adicionalmente muestra los objetos limitados por la categoria en la seccion de dropdown.
+
+## Consideraciones
+- Los botones en la parte superior no tienen funcionalidad activa debido a una reducción en el alcance del proyecto.
+- El proyecto puede demorar en cargar ya que no se diseñó una base de datos; en su lugar, todos los datos se cargan en la caché.
+- La primera vez que se abre el proyecto, es posible que se deba recargar la página dos veces debido a un error en los callbacks que aún no ha sido solucionado.
