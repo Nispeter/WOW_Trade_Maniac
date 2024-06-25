@@ -1,8 +1,8 @@
 import dash 
 from dash import Input, Output, State, ALL, callback_context, html
 import plotly.graph_objs as go
-from data import get_item_prices, get_item_statistics, df, create_elements, get_category_dict, merged_df, create_initial_search_options
-from components import create_selected_filter_card
+from data import get_item_prices, get_item_statistics, get_lowest_price, df, create_elements, get_category_dict, merged_df, create_initial_search_options
+from components import create_selected_filter_card, format_price_with_images
 import dash_bootstrap_components as dbc
 
 def register_callbacks(app):
@@ -127,7 +127,7 @@ def register_callbacks(app):
             empty_graph = go.Figure(layout=empty_graph_layout)
             return "No item selected", "",empty_graph,empty_graph,empty_graph,empty_graph
         item_name = search_value
-        current_price = item_data[-1]['unit_price'] if item_data else 0
+        current_price = get_lowest_price(item_name)
 
         # Prepare data for the price history graph
         x_values = [entry['snapshot_order'] for entry in item_data]
@@ -201,7 +201,7 @@ def register_callbacks(app):
                 'yaxis': {**graph_layout['yaxis'], 'title': 'Price'}
             }
         }
-        return item_name, f"${current_price}", lowest_price_figure, price_distribution_figure, quantity_sold_figure, price_quantity_scatter
+        return item_name, format_price_with_images(current_price), lowest_price_figure, price_distribution_figure, quantity_sold_figure, price_quantity_scatter
 
     @app.callback(
         Output('selected-category-name', 'children'),  

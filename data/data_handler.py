@@ -42,6 +42,24 @@ def get_item_prices(item_name):
         return None
     return item_data[['snapshot_order', 'unit_price', 'quantity']].to_dict(orient='records')
 
+# Function to get the lowest price for a specific item
+def get_lowest_price(item_name):
+    item_prices = get_item_prices(item_name)
+    
+    if item_prices is None:
+        return 0
+    
+    # Filter the results for 'snapshot_order' = 25
+    filtered_prices = [price for price in item_prices if price['snapshot_order'] == 25]
+    
+    # Check if filtered_prices is not empty
+    if filtered_prices:
+        # Find the entry with the lowest 'unit_price'
+        lowest_price_entry = min(filtered_prices, key=lambda x: x['unit_price'])
+        return lowest_price_entry['unit_price']
+    else:
+        return 0
+
 # Function to get item statistics for graphs
 def get_item_statistics(item_name):
     item_data = merged_df[merged_df['item_name'].str.contains(item_name, case=False)]

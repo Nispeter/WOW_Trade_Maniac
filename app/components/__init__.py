@@ -2,3 +2,4 @@ from .search_bar import create_search_bar
 from .sidebar_list_button import create_sidebar_list_button
 from .sidebar_category_dropdown import create_category_dropdown
 from .selected_filter_card import create_selected_filter_card
+from .utility import format_price_with_images
