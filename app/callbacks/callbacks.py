@@ -87,7 +87,7 @@ def register_callbacks(app):
             yaxis={'showgrid': False, 'zeroline': False}
             )
             empty_graph = go.Figure(layout=empty_graph_layout)
-            return "No item selected", "",empty_graph,empty_graph,empty_graph,empty_graph
+            return "Ningun item seleccionado", "",empty_graph,empty_graph,empty_graph,empty_graph
         
         item_data = get_item_prices(search_value)
         item_stats = get_item_statistics(search_value)
@@ -100,7 +100,7 @@ def register_callbacks(app):
                     'font': {
                         'color': '#CD970D'
                     },
-                    'title': 'No Data',
+                    'title': 'Sin datos disponibles',
                     'xaxis': {
                         'gridcolor': 'rgba(205, 151, 13, 0.2)',
                         'linecolor': '#CD970D',
@@ -125,7 +125,7 @@ def register_callbacks(app):
             yaxis={'showgrid': False, 'zeroline': False}
             )
             empty_graph = go.Figure(layout=empty_graph_layout)
-            return "No item selected", "",empty_graph,empty_graph,empty_graph,empty_graph
+            return "Ningun item seleccionado", "",empty_graph,empty_graph,empty_graph,empty_graph
         item_name = search_value
         current_price = get_lowest_price(item_name)
 
@@ -142,7 +142,7 @@ def register_callbacks(app):
             'xaxis': {
                 'gridcolor': 'rgba(205, 151, 13, 0.5)',
                 'linecolor': '#CD970D',
-                'title': 'Time',
+                'title': 'Tiempo (horas)',
                 'ticks': 'outside',
                 'tickcolor': '#CD970D',
                 'showgrid': True
@@ -150,7 +150,7 @@ def register_callbacks(app):
             'yaxis': {
                 'gridcolor': 'rgba(205, 151, 13, 0.5)',
                 'linecolor': '#CD970D',
-                'title': 'Price',
+                'title': 'Precio (oro)',
                 'ticks': 'outside',
                 'tickcolor': '#CD970D',
                 'showgrid': True
@@ -158,27 +158,26 @@ def register_callbacks(app):
         }
 
         # Lowest Price Over Time Graph
-        item_stats_no_outliers = item_stats.copy()
-        item_stats_no_outliers['unit_price'] = remove_outliers(item_stats['unit_price'],min_data_points=5)
-        lowest_price = item_stats_no_outliers.groupby('snapshot_order')['unit_price'].min().reset_index()
+        lowest_price = item_stats.groupby('snapshot_order')['unit_price'].min().reset_index()
+        lowest_price_no_outliers = remove_outliers(lowest_price['unit_price'], min_data_points=20)
         lowest_price_figure = {
-            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price, mode='lines', name='Lowest Price')],
+            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price['unit_price'], mode='lines', name='Lowest Price')],
             'layout': {
                 **graph_layout, 
-                'title': 'Lowest Price Over Time', 
-                'xaxis': {**graph_layout['xaxis'], 'title': 'Time (hours)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
+                'title': 'Precio Mínimo a lo Largo del Tiempo', 
+                'xaxis': {**graph_layout['xaxis'], 'title': 'Tiempo (horas)'}, 
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Precio (oro)'}
             }
         }
-        y_no_outliers = remove_outliers(item_stats['unit_price'],min_data_points=5)
+        y_no_outliers = remove_outliers(item_stats['unit_price'], percentage_threshold=120)
         # Price Distribution Over Time Graph
         price_distribution_figure = {
-            'data': [go.Box(x=item_stats['snapshot_order'], y=y_no_outliers, name='Price Distribution')],
+            'data': [go.Box(x=item_stats['snapshot_order'], y=item_stats['unit_price'], name='Price Distribution')],
             'layout': {
                 **graph_layout, 
-                'title': 'Price Distribution Over Time', 
-                'xaxis': {**graph_layout['xaxis'], 'title': 'Time (hours)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
+                'title': 'Distribución de Precios en el Tiempo', 
+                'xaxis': {**graph_layout['xaxis'], 'title': 'Tiempo (horas)'}, 
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Precio (oro)'}
             }
         }
 
@@ -187,20 +186,20 @@ def register_callbacks(app):
             'data': [go.Bar(x=x_values, y=[entry['quantity'] for entry in item_data], name='Quantity Sold')],
             'layout': {
                 **graph_layout, 
-                'title': 'Quantity Sold Over Time', 
-                'xaxis': {**graph_layout['xaxis'], 'title': 'Time (hours)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Quantity (units)'}
+                'title': 'Cantidad Vendida en el Tiempo', 
+                'xaxis': {**graph_layout['xaxis'], 'title': 'Tiempo (horas)'}, 
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Cantidad (unidades)'}
             }
         }
 
         # Price vs Quantity Sold Scatter Plot
         price_quantity_scatter = {
-            'data': [go.Scatter(x=item_stats['quantity'], y=y_no_outliers, mode='markers', name='Price vs Quantity')],
+            'data': [go.Scatter(x=item_stats['quantity'], y=item_stats['unit_price'], mode='markers', name='Price vs Quantity')],
             'layout': {
                 **graph_layout, 
-                'title': 'Price vs Quantity Sold', 
-                'xaxis': {**graph_layout['xaxis'], 'title': 'Quantity (units)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
+                'title': 'Dispersión Precio vs Cantidad Vendida', 
+                'xaxis': {**graph_layout['xaxis'], 'title': 'Cantidad (unidades)'}, 
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Precio (oro)'}
             }
         }
         return item_name, format_price_with_images(current_price), lowest_price_figure, price_distribution_figure, quantity_sold_figure, price_quantity_scatter
@@ -223,10 +222,10 @@ def register_callbacks(app):
         if triggered_id == 'clear-filter-button':
             return html.Div(style={'display': 'none'}), create_initial_search_options(),  {'display': 'none'}
         
-        item_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        item_id = eval(item_id)['index']  # Convert string representation of dict back to dict
-        
-        filtered_df = merged_df[merged_df['subcategory'] == item_id]
+    
+        item_id = eval(triggered_id)['index']  # Convert string representation of dict back to dict
+        category_name, subcategory_name = item_id.split('-')
+        filtered_df = merged_df[(merged_df['category'] == category_name) & (merged_df['subcategory'] == subcategory_name)]
         filtered_items = filtered_df['item_name'].unique().tolist()
         search_options = [{'label': item, 'value': item} for item in filtered_items]
         

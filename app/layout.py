@@ -74,7 +74,7 @@ def create_layout(items):
                 create_sidebar_list_button("precios", "ACTUALES", "/assets/icons/price-tag.png"), 
                 create_sidebar_list_button("precios", "HISTORICOS", "/assets/icons/price-tag.png"), 
                 
-                *[create_category_dropdown(f"{category}-{index}", category, categories_dict[category]) for index,category in enumerate(categories_dict)],
+                *[create_category_dropdown(f"{category}-{index}",category, category, categories_dict[category]) for index,category in enumerate(categories_dict)],
             ], width=3, className="col1"),
             dbc.Col([
                 dbc.Row([

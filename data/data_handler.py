@@ -166,26 +166,34 @@ def create_initial_search_options():
     return [{'label': item, 'value': item} for item in items]
 # Function to remove outliers from data
 
-def remove_outliers(data, min_data_points=None, adjust_criteria=False):
+def remove_outliers(data, min_data_points=None, adjust_criteria=False, percentage_threshold=300):
     if len(data) == 0:
         return data  # Return empty list if input is empty
     
     if len(set(data)) == 1:
         return data  # Return data as is if all values are the same
     
+    data = np.array(data)
     q1 = np.percentile(data, 25)
     q3 = np.percentile(data, 75)
     iqr = q3 - q1
     multiplier = 1.5
     
     # Dynamically adjust criteria if enabled
-    if adjust_criteria and len(data) < 10:  # Example condition
+    if adjust_criteria and len(data) < 10:  
         multiplier = 2.0  # Loosen the criteria
     
     lower_bound = q1 - (multiplier * iqr)
     upper_bound = q3 + (multiplier * iqr)
     
-    filtered_data = [x for x in data if x >= lower_bound and x <= upper_bound]
+    # Calculate median or mean and apply percentage threshold
+    central_value = np.median(data)  # You can also use np.mean(data) if preferred
+    percentage_upper_bound = central_value * (1 + percentage_threshold / 100.0)
+    
+    # Use the smaller of the IQR upper bound and the percentage threshold upper bound
+    final_upper_bound = min(upper_bound, percentage_upper_bound)
+    
+    filtered_data = [x for x in data if lower_bound <= x <= final_upper_bound]
     
     # Ensure a minimum number of data points are retained
     if min_data_points is not None and len(filtered_data) < min_data_points:
