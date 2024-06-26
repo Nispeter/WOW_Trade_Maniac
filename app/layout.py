@@ -97,6 +97,9 @@ def create_layout(items):
                     html.H2(id='item-title', style={'color': 'white'}),
                     
                     dbc.CardBody([
+                        html.H4('Precio actual', style={'color': 'white'}),
+                        html.P(id='current-prices', style={'color': 'white'}),
+                        html.H4('Arbol de construcción', style={'color': 'white'}),
                         dbc.Card(
                             [
                                 cyto.Cytoscape(
@@ -122,8 +125,7 @@ def create_layout(items):
                                 'box-shadow': '0 4px 8px var(--blue-shadow)'
                             }
                         ),
-                        html.H4('Current Prices', style={'color': 'white'}),
-                        html.P(id='current-prices', style={'color': 'white'}),
+                        html.H4('Detalles del mercado', style={'color': 'white'}),   
                         dcc.Graph(id='lowest-price-graph'),
                         dcc.Graph(id='price-distribution-graph'),
                         dcc.Graph(id='quantity-sold-graph'),
