@@ -38,19 +38,19 @@ python app.py
 
 ## Gráficos del Dashboard
 
-- Grafo de dependencias: Muestra la relación de dependencia entre los crafteos, indicando la cantidad y precio de las dependencias. Es útil para visualizar y entender los componentes necesarios para elaborar un objeto y sus costos asociados.
+- Grafo de dependencias: Muestra la relación de dependencia entre los crafteos, indicando la cantidad y precio de las dependencias. Es útil para visualizar y entender los componentes necesarios para elaborar un objeto y sus costos asociados.\
 ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/grafico_grafo.png)
 - Gráfico de Precio Mínimo a lo Largo del Tiempo:
-        Muestra el precio más bajo de un objeto en diferentes momentos.
+        Muestra el precio más bajo de un objeto en diferentes momentos.\
 ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/precio_minimo.png)
 - Gráfico de Distribución de Precios:
-        Proporciona una visión general de la variabilidad del precio de un objeto en un periodo determinado, muestra la volatilidad del mercado.
+        Proporciona una visión general de la variabilidad del precio de un objeto en un periodo determinado, muestra la volatilidad del mercado.\
   ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/distribucion.png)
 - Gráfico de Cantidad Vendida a lo Largo del Tiempo:
-        Muestra la cantidad de unidades vendidas en diferentes momentos, muestra la demanda de un objeto.
+        Muestra la cantidad de unidades vendidas en diferentes momentos, muestra la demanda de un objeto.\
   ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/cantidad_vendida.png)
 - Gráfico de Dispersión Precio vs Cantidad Vendida:
-        Permite visualizar la relación entre el precio de un objeto y la cantidad vendida, muestra el precio óptimo de un objeto
+        Permite visualizar la relación entre el precio de un objeto y la cantidad vendida, muestra el precio óptimo de un objeto\
 ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/dispersion.png)
 
 ## Utilidad adicional del Dashboard
@@ -66,5 +66,5 @@ python app.py
 - Los botones en la parte superior no tienen funcionalidad activa debido a una reducción en el alcance del proyecto.\
         ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/botones.png)
 - El proyecto puede demorar en cargar ya que no se diseñó una base de datos; en su lugar, todos los datos se cargan en la caché.
-- La primera vez que se abre el proyecto, es posible que se deba recargar la página dos veces debido a un error en los callbacks que aún no ha sido solucionado.
+- La primera vez que se abre el proyecto, es posible que se deba recargar la página dos veces debido a un error en los callbacks que aún no ha sido solucionado.\
 ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/error.png)
