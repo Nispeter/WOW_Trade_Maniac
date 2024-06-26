@@ -1,7 +1,7 @@
 import pandas as pd
 import glob
 import os
-
+import numpy as np
 # Define the path to the folder containing the Excel files
 data_folder = '../api/data'
 
@@ -159,8 +159,16 @@ def create_elements(item_id):
 
     add_elements(item_id, is_parent=True)  # The initial call sets the root node as the parent
     return elements
-
+# Function to get the initial search options for the search bar
 def create_initial_search_options():
     items_df = get_item_summary()
     items = items_df['item_name_'].tolist()
     return [{'label': item, 'value': item} for item in items]
+# Function to remove outliers from data
+def remove_outliers(data):
+    q1 = np.percentile(data, 25)
+    q3 = np.percentile(data, 75)
+    iqr = q3 - q1
+    lower_bound = q1 - (1.5 * iqr)
+    upper_bound = q3 + (1.5 * iqr)
+    return [x for x in data if x >= lower_bound and x <= upper_bound]

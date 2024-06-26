@@ -1,7 +1,7 @@
 import dash 
 from dash import Input, Output, State, ALL, callback_context, html
 import plotly.graph_objs as go
-from data import get_item_prices, get_item_statistics, get_lowest_price, df, create_elements, get_category_dict, merged_df, create_initial_search_options
+from data import get_item_prices, get_item_statistics, get_lowest_price, df, create_elements, get_category_dict, merged_df, create_initial_search_options, remove_outliers
 from components import create_selected_filter_card, format_price_with_images
 import dash_bootstrap_components as dbc
 
@@ -159,24 +159,25 @@ def register_callbacks(app):
 
         # Lowest Price Over Time Graph
         lowest_price = item_stats.groupby('snapshot_order')['unit_price'].min().reset_index()
+        lowest_price_no_outliers = remove_outliers(lowest_price['unit_price'])
         lowest_price_figure = {
-            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price['unit_price'], mode='lines', name='Lowest Price')],
+            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price_no_outliers, mode='lines', name='Lowest Price')],
             'layout': {
                 **graph_layout, 
                 'title': 'Lowest Price Over Time', 
                 'xaxis': {**graph_layout['xaxis'], 'title': 'Time (hours)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price'}
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
             }
         }
-
+        y_no_outliers = remove_outliers(item_stats['unit_price'])
         # Price Distribution Over Time Graph
         price_distribution_figure = {
-            'data': [go.Box(x=item_stats['snapshot_order'], y=item_stats['unit_price'], name='Price Distribution')],
+            'data': [go.Box(x=item_stats['snapshot_order'], y=y_no_outliers, name='Price Distribution')],
             'layout': {
                 **graph_layout, 
                 'title': 'Price Distribution Over Time', 
                 'xaxis': {**graph_layout['xaxis'], 'title': 'Time (hours)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price'}
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
             }
         }
 
@@ -193,12 +194,12 @@ def register_callbacks(app):
 
         # Price vs Quantity Sold Scatter Plot
         price_quantity_scatter = {
-            'data': [go.Scatter(x=item_stats['quantity'], y=item_stats['unit_price'], mode='markers', name='Price vs Quantity')],
+            'data': [go.Scatter(x=item_stats['quantity'], y=y_no_outliers, mode='markers', name='Price vs Quantity')],
             'layout': {
                 **graph_layout, 
                 'title': 'Price vs Quantity Sold', 
                 'xaxis': {**graph_layout['xaxis'], 'title': 'Quantity (units)'}, 
-                'yaxis': {**graph_layout['yaxis'], 'title': 'Price'}
+                'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
             }
         }
         return item_name, format_price_with_images(current_price), lowest_price_figure, price_distribution_figure, quantity_sold_figure, price_quantity_scatter
@@ -209,7 +210,8 @@ def register_callbacks(app):
         Output('clear-filter-button', 'style'),
         [Input({'type': 'category-dropdown-item', 'index': ALL}, 'n_clicks'),
         Input('clear-filter-button', 'n_clicks')],
-        prevent_initial_call=True
+        prevent_initial_call=True,
+        allow_multiple=True
     )
     def update_output(category_clicks, clear_clicks):
         ctx = callback_context
