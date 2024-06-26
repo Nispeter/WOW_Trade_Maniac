@@ -42,7 +42,7 @@ python app.py
 ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/grafico_grafo.png)
 - Gráfico de Precio Mínimo a lo Largo del Tiempo:
         Muestra el precio más bajo de un objeto en diferentes momentos.
-
+![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/precio_minimo.png)
 - Gráfico de Distribución de Precios:
         Proporciona una visión general de la variabilidad del precio de un objeto en un periodo determinado, muestra la volatilidad del mercado.
   ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/distribucion.png)
