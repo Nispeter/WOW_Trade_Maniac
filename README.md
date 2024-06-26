@@ -71,5 +71,4 @@ python app.py
 - Los botones en la parte superior no tienen funcionalidad activa debido a una reducción en el alcance del proyecto.\
         ![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/botones.png)
 - El proyecto puede demorar en cargar ya que no se diseñó una base de datos; en su lugar, todos los datos se cargan en la caché.
-- La primera vez que se abre el proyecto, es posible que se deba recargar la página dos veces debido a un error en los callbacks que aún no ha sido solucionado.\
-![](https://github.com/Nispeter/WOW_Trade_Maniac/blob/main/app/assets/error.png)
+
