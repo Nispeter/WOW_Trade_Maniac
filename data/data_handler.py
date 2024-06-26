@@ -165,10 +165,30 @@ def create_initial_search_options():
     items = items_df['item_name_'].tolist()
     return [{'label': item, 'value': item} for item in items]
 # Function to remove outliers from data
-def remove_outliers(data):
+
+def remove_outliers(data, min_data_points=None, adjust_criteria=False):
+    if len(data) == 0:
+        return data  # Return empty list if input is empty
+    
+    if len(set(data)) == 1:
+        return data  # Return data as is if all values are the same
+    
     q1 = np.percentile(data, 25)
     q3 = np.percentile(data, 75)
     iqr = q3 - q1
-    lower_bound = q1 - (1.5 * iqr)
-    upper_bound = q3 + (1.5 * iqr)
-    return [x for x in data if x >= lower_bound and x <= upper_bound]
+    multiplier = 1.5
+    
+    # Dynamically adjust criteria if enabled
+    if adjust_criteria and len(data) < 10:  # Example condition
+        multiplier = 2.0  # Loosen the criteria
+    
+    lower_bound = q1 - (multiplier * iqr)
+    upper_bound = q3 + (multiplier * iqr)
+    
+    filtered_data = [x for x in data if x >= lower_bound and x <= upper_bound]
+    
+    # Ensure a minimum number of data points are retained
+    if min_data_points is not None and len(filtered_data) < min_data_points:
+        return data[:min_data_points]
+    
+    return filtered_data if filtered_data else data  # Return original data if all were outliers

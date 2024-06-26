@@ -158,10 +158,11 @@ def register_callbacks(app):
         }
 
         # Lowest Price Over Time Graph
-        lowest_price = item_stats.groupby('snapshot_order')['unit_price'].min().reset_index()
-        lowest_price_no_outliers = remove_outliers(lowest_price['unit_price'])
+        item_stats_no_outliers = item_stats.copy()
+        item_stats_no_outliers['unit_price'] = remove_outliers(item_stats['unit_price'],min_data_points=5)
+        lowest_price = item_stats_no_outliers.groupby('snapshot_order')['unit_price'].min().reset_index()
         lowest_price_figure = {
-            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price_no_outliers, mode='lines', name='Lowest Price')],
+            'data': [go.Scatter(x=lowest_price['snapshot_order'], y=lowest_price, mode='lines', name='Lowest Price')],
             'layout': {
                 **graph_layout, 
                 'title': 'Lowest Price Over Time', 
@@ -169,7 +170,7 @@ def register_callbacks(app):
                 'yaxis': {**graph_layout['yaxis'], 'title': 'Price (gold)'}
             }
         }
-        y_no_outliers = remove_outliers(item_stats['unit_price'])
+        y_no_outliers = remove_outliers(item_stats['unit_price'],min_data_points=5)
         # Price Distribution Over Time Graph
         price_distribution_figure = {
             'data': [go.Box(x=item_stats['snapshot_order'], y=y_no_outliers, name='Price Distribution')],
