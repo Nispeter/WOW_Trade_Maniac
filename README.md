@@ -9,8 +9,7 @@ Dashboard está diseñado para los jugadores de World of Warcraft para mejorar s
 ## Contexto
 World of Warcraft  es un juego de rol multijugador masivo en línea (MMORPG) desarrollado por Blizzard Entertainment. Desde su lanzamiento en 2004, WoW ha cautivado a millones de jugadores con su vasto mundo de fantasía, misiones épicas y complejas mecánicas de juego. Los jugadores pueden elegir entre diversas razas y clases, participar en misiones, explorar mazmorras y competir en batallas PvP.
 El WoW Trade Maniac Dashboard está diseñado específicamente para jugadores interesados en el comercio y la elaboración de objetos dentro del juego. El comercio en WoW es una parte crucial del juego, donde los jugadores pueden comprar, vender e intercambiar una amplia variedad de objetos, desde materiales de elaboración hasta poderosos equipos y consumibles por medio de una casa de subastas, la cual se ocupa de gestionar las transacciones entre jugadores, simulando economia real.
-
-![](https://www.google.com/url?sa=i&url=https%3A%2F%2Fwarcraft.wiki.gg%2Fwiki%2FAuction_House&psig=AOvVaw0N3b3mYisPJ8On8CduZF5E&ust=1719520244839000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCJinuZyO-oYDFQAAAAAdAAAAABAJ)
+![Auction_House_8 3](https://github.com/Nispeter/WOW_Trade_Maniac/assets/64810836/3ff422dd-cbff-488e-ae3f-de5ca8630f32)
 *imagen de la UI de la casa de subastas dentro del juego*
 
 ## Instalación
